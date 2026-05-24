@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS couper;
+USE couper;
+
 CREATE TABLE utilisateurs (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     username    VARCHAR(50)  NOT NULL UNIQUE,
@@ -54,3 +57,14 @@ INSERT INTO utilisateurs (username, email, mot_de_passe, role) VALUES
 ('hugo',    'hugo@mail.fr',    SHA2('Pass123!', 256), 'user'),
 ('inès',   'ines@mail.fr',    SHA2('Pass123!', 256), 'user'),
 ('julian',  'julian@mail.fr',  SHA2('Pass123!', 256), 'user');
+
+INSERT INTO films (titre, description, annee, genre, image) VALUES
+('Parasite',    'film prenant qui joue sur la culpabilite', 2019, 'horeur/thriller', null),
+('Le Village',  'epoustouflant',    2004,   'horreur/film a enigme',    null);
+
+DELETE FROM films
+WHERE id NOT IN (
+    SELECT MAX(id)
+    FROM films
+    GROUP BY titre
+);
