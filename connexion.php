@@ -18,21 +18,31 @@
     <main>
 
 <?php
-        function insertUser($bdd,$pseudo,$photo)
+        function insertUser($bdd,$username,$email,$mot_de_passe)
 		{
 			//requete
-			$insert = "insert into user values(null, null, null, null, null,?,null,null,null,?)";
+			$insert = "insert into utilisateur values(?,?,?)";
 
 			//preparer la requete
 			$stmt = $bdd->prepare($insert);
-			$stmt->bind_param("ss", $pseudo, $photo);
+			$stmt->bind_param("ss", $username, $email, $mot_de_passe);
 			//executer la requete
 			$stmt->execute();
 
-			header("Location: http://localhost/iris_date/index.php");
+			header("Location: http://localhost/couper/index.php");
 
 		}
         
-
 ?>
+
+        <form method="post" enctype="multipart/form-data">
+    
+		<input type="text" name="username" placeholder="Nom d'utilisateur"><br>
+		<input type="email" name="email" placeholder="Adresse email"><br>
+		<input type="password" name="mot_de_passe" placeholder="Mot de passe"><br>
+
+		<input type="submit" name="charger" value="Charger">
+		
+        </form>
+
     </main>
