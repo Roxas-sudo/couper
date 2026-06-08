@@ -12,6 +12,7 @@
         <nav>  
             <a href="films.php">Films</a>
             <a href="connexion.php">Connexion</a>
+            <a href="profil.php">Profil</a>
         </nav>
     </header>
     

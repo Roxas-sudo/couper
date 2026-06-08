@@ -68,3 +68,50 @@ main {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--red); }
 ::selection { background: var(--red); color: var(--white); }
+
+/* Connexion / Inscription */
+main form {
+  max-width: 400px;
+  margin: 4rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+main form input[type="text"],
+main form input[type="email"],
+main form input[type="password"] {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: #111;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+main form input[type="text"]:focus,
+main form input[type="email"]:focus,
+main form input[type="password"]:focus {
+  border-color: var(--red);
+}
+
+main form input[type="submit"] {
+  padding: 0.75rem;
+  background: var(--red);
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+main form input[type="submit"]:hover {
+  opacity: 0.85;
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coupez ! - Page d'accueil</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+           <h1><a href="index.php">Coupez !</a></h1>
+        <nav>  
+            <a href="films.php">Films</a>
+            <a href="connexion.php">Connexion</a>
+            <a href="profil.php">Profil</a>
+        </nav>
+    </header>
+    
+    <main>
+
+ <?php
+
+$bdd = new mysqli("localhost","root","","couper");
+
+function updateUser($bdd, $id, $username, $email, $mot_de_passe)
+			{
+				$update = "update utilisateurs set username=?, email=?, mot_de_passe=? where id=?";
+				$stmt = $bdd->prepare($update);
+				$stmt->bind_param("sssi", $username, $email, $mot_de_passe, $id);
+				$stmt->execute();
+			}	
+
+if (isset($_POST['modifier'])) {
+    $hash = hash('sha256', $_POST['mot_de_passe']);
+    updateUser($bdd, $_SESSION['user']['id'], $_POST['username'], $_POST['email'], $hash);
+}
+
+?>
+
+        <form method="post">
+
+        <input type="text" name="username" placeholder="Nouveau nom d'utilisateur">
+        <input type="email" name="email" placeholder="Nouvelle adresse email">
+        <input type="password" name="mot_de_passe" placeholder="Nouveau mot de passe">
+        <input type="submit" name="modifier" value="Modifier">
+        
+        </form>
+
+    </main>
