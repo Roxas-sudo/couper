@@ -19,10 +19,15 @@
     <main>
 
 <?php
+session_start();
 
 //essaie de mettre cette ligne en commentaire si ça fonctionne pas
 
-$bdd = new mysqli("localhost","root","","couper");
+$bdd = new mysqli(
+	"sql107.infinityfree.com",
+    "if0_42137935",
+    "3bKq6saFJt4PuM5",
+    "if0_42137935_coupez");
 
         function insertUser($bdd,$username,$email,$mot_de_passe)
 		{
