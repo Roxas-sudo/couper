@@ -19,8 +19,13 @@
     <main>
 
  <?php
+session_start();
 
-$bdd = new mysqli("localhost","root","","couper");
+$bdd = new mysqli(
+	"sql107.infinityfree.com",
+    "if0_42137935",
+    "3bKq6saFJt4PuM5",
+    "if0_42137935_coupez");
 
 function updateUser($bdd, $id, $username, $email, $mot_de_passe)
 			{
