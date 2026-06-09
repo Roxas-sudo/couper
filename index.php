@@ -8,11 +8,11 @@
 </head>
 <body>
     <header>
-        <h1><a href="index.html">Coupez !</a></h1>
+        <h1><a href="index.php">Coupez !</a></h1>
         <nav>  
-            <a href="films.html">Films</a>
-            <a href="connexion.html">Connexion</a>
-            <a href="profil.html">Profil</a>
+            <a href="films.php">Films</a>
+            <a href="connexion.php">Connexion</a>
+            <a href="profil.php">Profil</a>
         </nav>
     </header>
     
