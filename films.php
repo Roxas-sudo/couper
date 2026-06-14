@@ -60,3 +60,17 @@
     }
     }
 
+    ?>
+
+    <h2>Films les plus populaires du moment</h2>
+
+    <?php
+    function getTopFilms($bdd) {
+        $stmt = $bdd->prepare("SELECT films.titre, COUNT(notes.id) AS nb_notes FROM films JOIN notes ON films.id = notes.id_film GROUP BY films.id ORDER BY nb_notes DESC LIMIT 5");
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+    $topFilms = getTopFilms($bdd);
+    ?>
+
+    

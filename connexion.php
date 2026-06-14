@@ -21,49 +21,51 @@
             <?php } ?>
         </nav>
     </header>
+
     <main>
 
-<?php
-session_start();
+    <?php
+    $bdd = new mysqli(
+        "sql107.infinityfree.com",
+        "if0_42137935",
+        "3bKq6saFJt4PuM5",
+        "if0_42137935_coupez");
 
-//essaie de mettre cette ligne en commentaire si ça fonctionne pas
+        function loginUser($bdd, $email, $mot_de_passe) {
+            $select = "SELECT * FROM utilisateurs WHERE email = ?";
+            $stmt = $bdd->prepare($select);
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-$bdd = new mysqli(
-	"sql107.infinityfree.com",
-    "if0_42137935",
-    "3bKq6saFJt4PuM5",
-    "if0_42137935_coupez");
-
-        function insertUser($bdd,$username,$email,$mot_de_passe)
-		{
-			//requete
-			$insert = "INSERT INTO utilisateurs (username, email, mot_de_passe) VALUES (?,?,?)";
-
-			//preparer la requete
-			$stmt = $bdd->prepare($insert);
-			$hash = hash('sha256', $mot_de_passe);
-            $stmt->bind_param("sss", $username, $email, $hash);
-			//executer la requete
-			$stmt->execute();
-
-			header("Location: http://localhost/couper/index.php");
-
-		}
-    
-        if (isset($_POST['charger'])) {
-        insertUser($bdd, $_POST['username'], $_POST['email'], $_POST['mot_de_passe']);
+            if ($result->num_rows > 0) {
+                $user = $result->fetch_assoc();
+                $hash = hash('sha256', $mot_de_passe);
+                if ($hash === $user['mot_de_passe']) {
+                    $_SESSION['user_id'] = $user['id'];
+                    header("Location: index.php");
+                    exit();
+                } else {
+                    echo "Mot de passe incorrect.";
+                }
+            } else {
+                    echo 'Email non trouvé.' . ' <a href="inscription.php">Créer un compte</a>';
+                }
         }
-        
-?>
 
-        <form method="post" enctype="multipart/form-data">
+    if (isset($_POST['se_connecter'])) {
+        loginUser($bdd, $_POST['email'], $_POST['password']);
+    }
+    ?>
+    <form method="POST">
+        <label for="email">Email :</label>
+        <input type="email" name="email" id="email" required><br>
+
+        <label for="password">Mot de passe :</label>
+        <input type="password" name="password" id="password" required><br>
+
+        <input type="submit" name="se_connecter" value="Se connecter">
+    </form>
+
+
     
-		<input type="text" name="username" placeholder="Nom d'utilisateur">
-		<input type="email" name="email" placeholder="Adresse email">
-		<input type="password" name="mot_de_passe" placeholder="Mot de passe">
-
-		<input type="submit" name="charger" value="Charger">
-		
-        </form>
-
-    </main>
