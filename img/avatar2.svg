@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Clap rigolo -->
+  <circle cx="60" cy="60" r="60" fill="#cc1f1f"/>
+  <g transform="rotate(-10 26 46)">
+    <rect x="24" y="28" width="72" height="17" rx="3" fill="#1a1a1a"/>
+    <path d="M34 28 L46 28 L38 45 L26 45 Z" fill="#f0ede8"/>
+    <path d="M58 28 L70 28 L62 45 L50 45 Z" fill="#f0ede8"/>
+    <path d="M82 28 L94 28 L86 45 L74 45 Z" fill="#f0ede8"/>
+  </g>
+  <rect x="24" y="46" width="72" height="48" rx="5" fill="#1a1a1a"/>
+  <circle cx="45" cy="63" r="8" fill="#ffffff"/>
+  <circle cx="47" cy="64" r="3.5" fill="#1a1a1a"/>
+  <circle cx="75" cy="63" r="8" fill="#ffffff"/>
+  <circle cx="77" cy="64" r="3.5" fill="#1a1a1a"/>
+  <path d="M42 78 Q60 94 78 78 Z" fill="#ffffff"/>
+  <path d="M42 78 Q60 94 78 78" fill="none" stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="52" y1="79.5" x2="52" y2="85.5" stroke="#1a1a1a" stroke-width="1.5"/>
+  <line x1="60" y1="80" x2="60" y2="88" stroke="#1a1a1a" stroke-width="1.5"/>
+  <line x1="68" y1="79.5" x2="68" y2="85.5" stroke="#1a1a1a" stroke-width="1.5"/>
+</svg>

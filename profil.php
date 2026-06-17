@@ -1,54 +1,84 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coupez ! - Page d'accueil</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <h1><a href="index.php">Coupez !</a></h1>
-        <nav>  
-            <a href="films.php">Films</a>
-            <a href="connexion.php">Connexion</a>
-            <a href="profil.php">Profil</a>
-        </nav>
-    </header>
-    
-    <main>
-
- <?php
+<?php
 session_start();
+require "bdd.php";
 
-$bdd = new mysqli(
-	"sql107.infinityfree.com",
-    "if0_42137935",
-    "3bKq6saFJt4PuM5",
-    "if0_42137935_coupez");
-
-function updateUser($bdd, $id, $username, $email, $mot_de_passe)
-			{
-				$update = "update utilisateurs set username=?, email=?, mot_de_passe=? where id=?";
-				$stmt = $bdd->prepare($update);
-				$stmt->bind_param("sssi", $username, $email, $mot_de_passe, $id);
-				$stmt->execute();
-			}	
-
-if (isset($_POST['modifier'])) {
-    $hash = hash('sha256', $_POST['mot_de_passe']);
-    updateUser($bdd, $_SESSION['user']['id'], $_POST['username'], $_POST['email'], $hash);
+// Si l'utilisateur n'est pas connecté, on le renvoie vers la page de connexion
+if (!isset($_SESSION['user_id'])) {
+    header("Location: connexion.php");
+    exit;
 }
 
+// Changement de photo de profil
+if (isset($_POST['avatar'])) {
+    $avatar = (int) $_POST['avatar'];
+
+    if ($avatar >= 1 && $avatar <= 4) {
+        $stmt = $bdd->prepare("UPDATE utilisateurs SET avatar = ? WHERE id = ?");
+
+        if ($stmt) {
+            $stmt->bind_param("ii", $avatar, $_SESSION['user_id']);
+            $stmt->execute();
+        }
+
+        $_SESSION['avatar'] = $avatar;
+    }
+}
+
+// Suppression du compte
+if (isset($_POST['supprimer_compte'])) {
+    $stmt = $bdd->prepare("DELETE FROM utilisateurs WHERE id = ?");
+
+    if ($stmt) {
+        $stmt->bind_param("i", $_SESSION['user_id']);
+        $stmt->execute();
+    }
+
+    // On vide et on détruit la session, puis retour à l'accueil
+    $_SESSION = array();
+    session_destroy();
+
+    header("Location: index.php");
+    exit;
+}
+
+$avatar_actuel = isset($_SESSION['avatar']) ? (int) $_SESSION['avatar'] : 1;
+if ($avatar_actuel < 1 || $avatar_actuel > 4) {
+    $avatar_actuel = 1;
+}
+
+$titre = "Profil";
+require "header.php";
 ?>
 
-        <form method="post">
+    <main>
 
-        <input type="text" name="username" placeholder="Nouveau nom d'utilisateur">
-        <input type="email" name="email" placeholder="Nouvelle adresse email">
-        <input type="password" name="mot_de_passe" placeholder="Nouveau mot de passe">
-        <input type="submit" name="modifier" value="Modifier">
-        
-        </form>
+        <p class="message succes">✅ Connexion réussie</p>
+
+        <section class="profil">
+
+            <img class="avatar-actuel" src="img/avatar<?php echo $avatar_actuel; ?>.svg" alt="Photo de profil">
+
+            <h2>Bienvenue, <?php echo htmlspecialchars($_SESSION['username']); ?> !</h2>
+
+            <a class="btn-deconnexion" href="deconnexion.php">Déconnexion</a>
+
+            <h3>Choisis ta photo de profil</h3>
+
+            <form method="post" class="choix-avatars">
+                <?php for ($i = 1; $i <= 4; $i++) { ?>
+                    <button type="submit" name="avatar" value="<?php echo $i; ?>" class="<?php echo ($i == $avatar_actuel) ? 'choisi' : ''; ?>" title="Avatar <?php echo $i; ?>">
+                        <img src="img/avatar<?php echo $i; ?>.svg" alt="Avatar <?php echo $i; ?>">
+                    </button>
+                <?php } ?>
+            </form>
+
+            <form method="post" onsubmit="return confirm('Supprimer définitivement ton compte ? Cette action est irréversible.');">
+                <button type="submit" name="supprimer_compte" class="btn-deconnexion">Supprimer mon compte</button>
+            </form>
+
+        </section>
 
     </main>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Pop-corn cool -->
+  <circle cx="60" cy="60" r="60" fill="#f5c518"/>
+  <g fill="#fffdf5" stroke="#e0cfa0" stroke-width="2">
+    <circle cx="41" cy="40" r="10"/>
+    <circle cx="79" cy="40" r="10"/>
+    <circle cx="50" cy="31" r="9"/>
+    <circle cx="70" cy="31" r="9"/>
+    <circle cx="60" cy="36" r="11"/>
+  </g>
+  <defs>
+    <clipPath id="boite">
+      <path d="M34 48 L42 102 L78 102 L86 48 Z"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#boite)">
+    <rect x="30" y="44" width="60" height="62" fill="#ffffff"/>
+    <rect x="37" y="44" width="10" height="62" fill="#cc1f1f"/>
+    <rect x="55" y="44" width="10" height="62" fill="#cc1f1f"/>
+    <rect x="73" y="44" width="10" height="62" fill="#cc1f1f"/>
+  </g>
+  <path d="M34 48 L42 102 L78 102 L86 48 Z" fill="none" stroke="#a31818" stroke-width="2.5"/>
+  <g fill="#1a1a1a">
+    <rect x="40" y="58" width="17" height="12" rx="5"/>
+    <rect x="63" y="58" width="17" height="12" rx="5"/>
+    <rect x="54" y="61" width="12" height="3.5"/>
+  </g>
+  <path d="M50 84 Q60 93 70 84" stroke="#1a1a1a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+</svg>

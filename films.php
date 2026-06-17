@@ -1,16 +1,17 @@
-<?php if (session_status() === PHP_SESSION_NONE) { session_start(); } ?>
+<?php if (session_status() === PHP_SESSION_NONE) { session_start(); } $titre = "Films"; ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coupez ! - <?php echo isset($titre) ? $titre : "Accueil"; ?></title>
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
     <header>
         <h1><a href="index.php">Coupez !</a></h1>
         <nav>
+            <a href="ajout_film.php">Ajouter un film!</a>
             <a href="films.php">Films</a>
             <?php if (isset($_SESSION['user_id'])) { ?>
                 <a href="profil.php">Profil</a>
@@ -23,54 +24,58 @@
     </header>
 
     <main>
-        
-    <?php
-    $bdd = new mysqli(
-        "sql107.infinityfree.com",
-        "if0_42137935",
-        "3bKq6saFJt4PuM5",
-        "if0_42137935_coupez");
 
-    echo "<form method='get'>
+    <?php
+    require "bdd.php";
+    require "fonctions.php";
+
+    echo "<form method='get' class='recherche-film'>
         <input type='text' name='recherche' placeholder='Rechercher un film...'>
-        <input type='submit' value='recherche'>
+        <input type='submit' value='Rechercher'>
     </form>";
 
+    // Résultats de recherche
     if (isset($_GET['recherche'])) {
         $recherche = $_GET['recherche'];
-        $stmt = $bdd->prepare("SELECT * FROM films WHERE titre LIKE (?)");
+        $stmt = $bdd->prepare("SELECT * FROM films WHERE titre LIKE (?) AND cache = 0");
         $motif = "%" . $recherche . "%";
         $stmt->bind_param("s", $motif);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        echo "<h2>Résultats de la recherche pour '$recherche'</h2>";
+        echo "<h2>Résultats de la recherche pour '" . htmlspecialchars($recherche) . "'</h2>";
 
-       if ($result->num_rows === 0) {
-    echo "<p>Film non trouvé.</p>";
-    echo "<a href='ajout_film.php'>Ajouter un nouveau film</a>";
+        if ($result->num_rows === 0) {
+            echo "<p>Film non trouvé.</p>";
+            echo "<a href='ajout_film.php'>Ajouter un nouveau film</a>";
+        } else {
+            grilleFilms($result);
+        }
+    }
+
+    // Films les plus populaires (ceux qui ont le plus d'avis)
+    $populaires = $bdd->query("SELECT films.* FROM films
+                               JOIN commentaires ON films.id = commentaires.id_film
+                               WHERE films.cache = 0
+                               GROUP BY films.id
+                               ORDER BY COUNT(commentaires.id) DESC
+                               LIMIT 5");
+    if ($populaires && $populaires->num_rows > 0) {
+        echo "<h2>Films les plus populaires du moment</h2>";
+        grilleFilms($populaires);
+    }
+
+    // Tous les films
+    echo "<h2>Tous les films</h2>";
+    $tous = $bdd->query("SELECT * FROM films WHERE cache = 0 ORDER BY titre");
+    if ($tous && $tous->num_rows > 0) {
+        grilleFilms($tous);
     } else {
-    while ($film = $result->fetch_assoc()) {
-        echo "<a href='film.php?id=" . $film['id'] . "'>";
-        echo "<div class='film'>";
-        echo "<h3>" . htmlspecialchars($film['titre']) . "</h3>";
-        echo "<img src='" . htmlspecialchars($film['image']) . "'>";
-        echo "</div>";
-        echo "</a>";
+        echo "<p>Aucun film pour le moment. <a href='ajout_film.php'>Ajouter un film</a></p>";
     }
-    }
-
     ?>
 
-    <h2>Films les plus populaires du moment</h2>
+    </main>
 
-    <?php
-    function getTopFilms($bdd) {
-        $stmt = $bdd->prepare("SELECT films.titre, COUNT(notes.id) AS nb_notes FROM films JOIN notes ON films.id = notes.id_film GROUP BY films.id ORDER BY nb_notes DESC LIMIT 5");
-        $stmt->execute();
-        return $stmt->get_result();
-    }
-    $topFilms = getTopFilms($bdd);
-    ?>
-
-    
+</body>
+</html>

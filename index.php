@@ -16,5 +16,23 @@ require "header.php";
 
     </main>
 
+    <script>
+    // Easter egg : 5 clics rapides sur le logo « Coupez ! » ouvrent la zone secrète
+    (function () {
+        var logo = document.querySelector('header h1 a');
+        if (!logo) return;
+        var clics = 0, minuteur = null;
+        logo.addEventListener('click', function (e) {
+            e.preventDefault();
+            clics++;
+            clearTimeout(minuteur);
+            minuteur = setTimeout(function () { clics = 0; }, 1500);
+            if (clics >= 5) {
+                window.location.href = 'secret.php';
+            }
+        });
+    })();
+    </script>
+
 </body>
 </html>

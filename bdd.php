@@ -21,3 +21,8 @@ $bdd->set_charset("utf8mb4");
 // Crée la colonne avatar au premier passage (ne fait rien si elle existe déjà,
 // et le site continue de fonctionner même si la requête est refusée)
 $bdd->query("ALTER TABLE utilisateurs ADD COLUMN IF NOT EXISTS avatar TINYINT NOT NULL DEFAULT 1");
+
+// Colonnes ajoutées aux films : id_utilisateur (auteur, pour modifier/supprimer son film)
+// et cache (film masqué du public, visible seulement dans la zone secrète).
+$bdd->query("ALTER TABLE films ADD COLUMN IF NOT EXISTS id_utilisateur INT NOT NULL DEFAULT 0");
+$bdd->query("ALTER TABLE films ADD COLUMN IF NOT EXISTS cache TINYINT NOT NULL DEFAULT 0");

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coupez ! - <?php echo isset($titre) ? $titre : "Accueil"; ?></title>
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
     <header>
@@ -43,6 +43,8 @@
                 $hash = hash('sha256', $mot_de_passe);
                 if ($hash === $user['mot_de_passe']) {
                     $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    $_SESSION['role'] = $user['role'];
                     header("Location: index.php");
                     exit();
                 } else {

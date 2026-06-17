@@ -1,63 +1,46 @@
-<?php if (session_status() === PHP_SESSION_NONE) { session_start(); } ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coupez ! - <?php echo isset($titre) ? $titre : "Accueil"; ?></title>
-  <link rel="stylesheet" href="style.css?v=2">
-</head>
-<body>
-    <header>
-        <h1><a href="index.php">Coupez !</a></h1>
-        <nav>
-            <a href="films.php">Films</a>
-            <?php if (isset($_SESSION['user_id'])) { ?>
-                <a href="profil.php">Profil</a>
-                <a href="deconnexion.php">Déconnexion</a>
-            <?php } else { ?>
-                <a href="connexion.php">Connexion</a>
-                <a href="inscription.php">Inscription</a>
-            <?php } ?>
-        </nav>
-    </header>
+<?php
+session_start();
+require "bdd.php";
+require "fonctions.php";
 
-    <main>
-        
-    <?php
-    $bdd = new mysqli(
-        "sql107.infinityfree.com",
-        "if0_42137935",
-        "3bKq6saFJt4PuM5",
-        "if0_42137935_coupez");
-
-    if (!isset($_SESSION['user_id'])) {
+// Il faut être connecté pour ajouter un film
+if (!isset($_SESSION['user_id'])) {
     header("Location: connexion.php");
     exit();
+}
+
+function insertFilm($bdd, $titre, $description, $annee, $genre, $image, $cache, $id_utilisateur) {
+    $insert = "INSERT INTO films (titre, description, annee, genre, image, cache, id_utilisateur) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = $bdd->prepare($insert);
+    if ($stmt) {
+        $stmt->bind_param("sssssii", $titre, $description, $annee, $genre, $image, $cache, $id_utilisateur);
+        $stmt->execute();
     }
 
-     function insertFilm ($bdd,$titre,$description, $annee, $genre, $image)
-		{
-			//requete
-			$insert = "INSERT INTO films (titre, description, annee, genre, image) VALUES (?,?,?,?,?)";
+    header("Location: films.php");
+    exit();
+}
 
-			//preparer la requete
-			$stmt = $bdd->prepare($insert);
-			$stmt->bind_param("sssss", $titre, $description, $annee, $genre, $image);
-			//executer la requete
-			$stmt->execute();
+if (isset($_POST['charger'])) {
+    $cache = isset($_POST['cache']) ? 1 : 0;
 
-			header("Location: http://localhost/couper/index.php");
+    // Priorité au fichier envoyé ; sinon on prend l'URL éventuellement saisie
+    $image = gererUpload('image_fichier');
+    if ($image === "") {
+        $image = trim($_POST['image'] ?? "");
+    }
 
-		}
-    
-        if (isset($_POST['charger'])) {
-        insertFilm($bdd, $_POST['titre'], $_POST['description'], $_POST['annee'], $_POST['genre'], $_POST['image']);
+    insertFilm($bdd, $_POST['titre'], $_POST['description'], $_POST['annee'], $_POST['genre'], $image, $cache, $_SESSION['user_id']);
+}
 
-        }
-
+$titre = "Ajouter un film";
+require "header.php";
 ?>
-        <form method="POST">
+
+    <main>
+
+        <form method="POST" enctype="multipart/form-data">
             <label for="titre">Titre :</label>
             <input type="text" name="titre" id="titre" required><br>
 
@@ -70,10 +53,18 @@
             <label for="annee">Année :</label>
             <input type="number" name="annee" id="annee" required><br>
 
-            <label for="image">Image (URL) :</label>
-            <input type="text" name="image" id="image" required><br>
+            <label for="image_fichier">Affiche (fichier depuis ton ordinateur) :</label>
+            <input type="file" name="image_fichier" id="image_fichier" accept="image/*" style="color: var(--white);"><br>
+
+            <label for="image">ou URL de l'image (optionnel) :</label>
+            <input type="text" name="image" id="image"><br>
+
+            <label class="case-secrete"><input type="checkbox" name="cache" value="1"> Film secret (visible uniquement dans la zone cachée)</label>
 
             <input type="submit" name="charger" value="Ajouter le film">
         </form>
 
     </main>
+
+</body>
+</html>

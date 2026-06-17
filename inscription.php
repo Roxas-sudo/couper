@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coupez ! - <?php echo isset($titre) ? $titre : "Accueil"; ?></title>
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
     <header>
@@ -46,7 +46,7 @@ $bdd = new mysqli(
 			//executer la requete
 			$stmt->execute();
 
-			header("Location: http://localhost/couper/index.php");
+			header("Location: connexion.php");
 
 		}
     
